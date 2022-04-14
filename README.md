@@ -1,7 +1,4 @@
 # Bookstore NestJS demo
-
-based on digitalocean [tuto](https://www.digitalocean.com/community/tutorials/getting-started-with-nestjs)
-
 ### Installing Nest.js
 
 `npm install -g @nestjs/cli`
@@ -23,3 +20,8 @@ based on digitalocean [tuto](https://www.digitalocean.com/community/tutorials/ge
 ### Creating a Service
 
 `nest generate service books`
+
+
+## Resources
+- NestJ [doc](https://docs.nestjs.com/techniques/mongodb)
+- digitalocean [tuto](https://www.digitalocean.com/community/tutorials/getting-started-with-nestjs)

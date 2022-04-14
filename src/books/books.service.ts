@@ -6,15 +6,13 @@ export class BooksService {
   books = BOOKS;
 
   getBooks(): Promise<any> {
-    return new Promise((resolve) => {
-      resolve(this.books);
-    });
+    return Promise.resolve(this.books);
   }
 
   getBook(bookID): Promise<any> {
     const id = Number(bookID);
     return new Promise((resolve) => {
-      const book = this.books.find((book) => book.id === id);
+      const book = this.books.find(({ id: curBookId }) => curBookId === id);
       if (!book) {
         throw new HttpException("Book does not exist!", 404);
       }
