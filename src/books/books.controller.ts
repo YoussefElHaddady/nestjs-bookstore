@@ -1,28 +1,39 @@
-import { Body, Controller, Delete, Get, Param, Post, Query } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res } from "@nestjs/common";
 import { BooksService } from "./books.service";
 import { CreateBookDTO } from "./dto/create-book.dto";
 
 @Controller("books")
 export class BooksController {
-  constructor(private readonly booksService: BooksService) {}
+  constructor(private readonly booksService: BooksService) {
+  }
 
   @Get()
-  async getBooks() {
-    return this.booksService.getBooks();
+  async getBooks(@Res() response) {
+    const books = await this.booksService.getAll();
+    return response.status(HttpStatus.OK).json({ books });
   }
 
   @Get(":bookID")
-  async getBook(@Param("bookID") bookID) {
-    return this.booksService.getBook(bookID);
+  async getBook(@Res() response, @Param("bookID") bookID) {
+    const book = await this.booksService.getById(bookID);
+    return response.status(HttpStatus.OK).json({ book });
   }
 
   @Post()
-  async addBook(@Body() createBookDTO: CreateBookDTO) {
-    return this.booksService.addBook(createBookDTO);
+  async createBook(@Res() response, @Body() createBookDTO: CreateBookDTO) {
+    const newBook = await this.booksService.create(createBookDTO);
+    return response.status(HttpStatus.CREATED).json({ newBook });
   }
 
-  @Delete()
-  async deleteBook(@Query() query) {
-    return this.booksService.deleteBook(query.bookID);
+  @Put("/:bookID")
+  async updateBook(@Res() response, @Param("bookID") bookID, @Body() createBookDTO: CreateBookDTO) {
+    const updatedBook = await this.booksService.update(bookID, createBookDTO);
+    return response.status(HttpStatus.OK).json({ updatedBook });
+  }
+
+  @Delete("/:bookID")
+  async deleteBook(@Res() response, @Param("bookID") bookID) {
+    const deletedBook = await this.booksService.delete(bookID);
+    return response.status(HttpStatus.OK).json({ deletedBook });
   }
 }

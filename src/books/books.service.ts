@@ -1,41 +1,33 @@
-import { HttpException, Injectable } from "@nestjs/common";
-import { BOOKS } from "./books.mock";
+import { Injectable } from "@nestjs/common";
+import { Book, BookDocument } from "./schemas/book.schema";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
+import { CreateBookDTO } from "./dto/create-book.dto";
 
 @Injectable()
 export class BooksService {
-  books = BOOKS;
-
-  getBooks(): Promise<any> {
-    return Promise.resolve(this.books);
+  constructor(@InjectModel(Book.name) private bookModel: Model<BookDocument>) {
   }
 
-  getBook(bookID): Promise<any> {
-    const id = Number(bookID);
-    return new Promise((resolve) => {
-      const book = this.books.find(({ id: curBookId }) => curBookId === id);
-      if (!book) {
-        throw new HttpException("Book does not exist!", 404);
-      }
-      resolve(book);
-    });
+  async getAll(): Promise<Book[]> {
+    return this.bookModel.find().exec();
   }
 
-  addBook(book): Promise<any> {
-    return new Promise((resolve) => {
-      this.books.push(book);
-      resolve(this.books);
-    });
+  async getById(bookID: number): Promise<Book> {
+    return this.bookModel.findById(bookID).exec();
   }
 
-  deleteBook(bookID): Promise<any> {
-    const id = Number(bookID);
-    return new Promise((resolve) => {
-      const index = this.books.findIndex((book) => book.id === id);
-      if (index === -1) {
-        throw new HttpException("Book does not exist!", 404);
-      }
-      this.books.splice(index, 1);
-      resolve(this.books);
-    });
+  async create(createBookDto: CreateBookDTO): Promise<Book> {
+    const createdBook = new this.bookModel(createBookDto);
+    return createdBook.save();
+  }
+
+  async update(bookID: number, createBookDto: CreateBookDTO): Promise<Book> {
+    const updatedBook = new this.bookModel(createBookDto);
+    return this.bookModel.findByIdAndUpdate(bookID, updatedBook, { new: false });
+  }
+
+  async delete(bookID: number): Promise<any> {
+    return this.bookModel.findByIdAndRemove(bookID);
   }
 }
