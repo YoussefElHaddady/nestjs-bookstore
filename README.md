@@ -1,4 +1,7 @@
 # Bookstore NestJS demo
+![code: Fun Code](https://img.shields.io/badge/code-Fun%20code-informational)
+![version: v0.1](https://img.shields.io/badge/version-v0.1-green)
+
 ### Installing Nest.js
 
 `npm install -g @nestjs/cli`
